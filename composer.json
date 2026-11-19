@@ -1,0 +1,44 @@
+{
+    "name": "squidweb/laravel-adcenter-client",
+    "description": "Blade-componenten en helpers om advertenties van AdCenter te tonen op Laravel-sites.",
+    "type": "library",
+    "license": "proprietary",
+    "keywords": ["laravel", "adcenter", "advertenties", "blade"],
+    "require": {
+        "php": "^8.4",
+        "illuminate/support": "^12.0|^13.0",
+        "illuminate/view": "^12.0|^13.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.0|^11.0",
+        "phpunit/phpunit": "^11.5|^12.0|^13.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Squidweb\\AdCenter\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Squidweb\\AdCenter\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Squidweb\\AdCenter\\AdCenterServiceProvider"
+            ],
+            "aliases": {
+                "AdCenter": "Squidweb\\AdCenter\\Facades\\AdCenter"
+            }
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
