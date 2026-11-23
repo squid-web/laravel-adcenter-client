@@ -6,9 +6,12 @@ namespace Squidweb\AdCenter\Tests;
 
 use PHPUnit\Framework\Attributes\Test;
 use Squidweb\AdCenter\Facades\AdCenter;
+use Squidweb\AdCenter\View\Components\Script;
 
 class ComponentsTest extends TestCase
 {
+    private const STYLE = '<style data-adcenter>'.Script::STYLES.'</style>';
+
     private function disable(): void
     {
         config(['adcenter.enabled' => false]);
@@ -19,7 +22,7 @@ class ComponentsTest extends TestCase
     public function script_zonder_contexten(): void
     {
         $this->assertSame(
-            '<script async src="https://ads.example.test/l.js" data-site="demo"></script>',
+            self::STYLE.'<script async src="https://ads.example.test/l.js" data-site="demo"></script>',
             $this->render('<x-adcenter::script />'),
         );
     }
@@ -30,7 +33,7 @@ class ComponentsTest extends TestCase
         AdCenter::context('Costa Rica', 'Natuur');
 
         $this->assertSame(
-            '<script async src="https://ads.example.test/l.js" data-site="demo" data-ctx="costa-rica,natuur"></script>',
+            self::STYLE.'<script async src="https://ads.example.test/l.js" data-site="demo" data-ctx="costa-rica,natuur"></script>',
             $this->render('<x-adcenter::script />'),
         );
     }
@@ -41,7 +44,7 @@ class ComponentsTest extends TestCase
         AdCenter::context('costa-rica');
 
         $this->assertSame(
-            '<script async src="https://ads.example.test/l.js" data-site="demo" data-ctx="costa-rica,reizen,natuur"></script>',
+            self::STYLE.'<script async src="https://ads.example.test/l.js" data-site="demo" data-ctx="costa-rica,reizen,natuur"></script>',
             $this->render('<x-adcenter::script :context="$extra" />', ['extra' => ['Reizen', 'Natuur']]),
         );
     }
@@ -50,7 +53,7 @@ class ComponentsTest extends TestCase
     public function script_geeft_extra_attributen_door(): void
     {
         $this->assertSame(
-            '<script async src="https://ads.example.test/l.js" data-site="demo" nonce="abc123"></script>',
+            '<style data-adcenter nonce="abc123">'.Script::STYLES.'</style><script async src="https://ads.example.test/l.js" data-site="demo" nonce="abc123"></script>',
             $this->render('<x-adcenter::script nonce="abc123" />'),
         );
     }
@@ -62,9 +65,19 @@ class ComponentsTest extends TestCase
         $this->app->forgetScopedInstances();
 
         $this->assertSame(
-            '<script async src="https://x.test/?a=1&amp;b=2/l.js" data-site="a&quot;b&lt;c&gt;"></script>',
+            self::STYLE.'<script async src="https://x.test/?a=1&amp;b=2/l.js" data-site="a&quot;b&lt;c&gt;"></script>',
             $this->render('<x-adcenter::script />'),
         );
+    }
+
+    #[Test]
+    public function script_zet_de_regels_voor_slots_er_meteen_bij(): void
+    {
+        $html = $this->render('<x-adcenter::script />');
+
+        $this->assertStringStartsWith('<style data-adcenter>', $html);
+        $this->assertStringContainsString('@media (min-width:768px){[data-adcenter-device=mobile],[data-adcenter-slot][device=mobile]{display:none!important}}', $html);
+        $this->assertStringContainsString('[data-adcenter-slot]:empty:not([style*="min-height"]){display:none}', $html);
     }
 
     #[Test]

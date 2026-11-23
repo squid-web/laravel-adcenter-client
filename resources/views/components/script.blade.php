@@ -1,1 +1,1 @@
-<script async src="{{ $src }}" data-site="{{ $site }}"@if ($ctx !== '') data-ctx="{{ $ctx }}"@endif{!! $attributes->isNotEmpty() ? ' '.$attributes : '' !!}></script>
+<style data-adcenter{!! $attributes->has('nonce') ? ' nonce="'.e($attributes->get('nonce')).'"' : '' !!}>{!! $styles !!}</style><script async src="{{ $src }}" data-site="{{ $site }}"@if ($ctx !== '') data-ctx="{{ $ctx }}"@endif{!! $attributes->isNotEmpty() ? ' '.$attributes : '' !!}></script>

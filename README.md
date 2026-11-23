@@ -84,8 +84,14 @@ Zet het script één keer in de `<head>` (of onderaan de `<body>`):
 Dit rendert:
 
 ```html
+<style data-adcenter>…</style>
 <script async src="https://adcenter.squid-web.nl/l.js" data-site="mijnsite" data-ctx="costa-rica,natuur"></script>
 ```
+
+De korte `<style>` ervoor zorgt dat de pagina klopt vanaf de eerste weergave, nog voordat het (async) script
+draait: slots met `device="mobile"` of `device="desktop"` verschijnen alleen op dat scherm (mobiel is tot en met
+767px breed), en een slot zonder `height` is onzichtbaar tot er een advertentie in staat. Zo breekt een leeg
+slot (bijvoorbeeld een `col-12` tussen producten) geen rij of raster. Een `nonce` gaat ook naar de `<style>`.
 
 `data-ctx` wordt weggelaten als er geen contexten zijn. Extra contexten kun je
 ook vanuit de view meegeven, en extra attributen (zoals een CSP-nonce) worden
@@ -135,7 +141,11 @@ onder Octane) begint met een lege lijst contexten.
 
 - `name` is de slotnaam zoals die in AdCenter is ingesteld.
 - `height` (optioneel, in pixels) reserveert ruimte, zodat de pagina niet
-  verspringt als de advertentie laadt (voorkomt CLS).
+  verspringt als de advertentie laadt (voorkomt CLS). Zonder `height` is het
+  slot onzichtbaar tot er een advertentie in staat.
+- `device` (optioneel): `mobile` of `desktop`. Het slot verschijnt dan alleen
+  op dat soort scherm; zonder `device` altijd. Zo kan hetzelfde slot op mobiel
+  ergens anders staan dan op desktop.
 - Extra attributen (`class`, `id`, `style`, …) worden doorgegeven aan de div.
 
 **Fallback-inhoud**: wat je tussen de tags zet, wordt getoond als AdCenter
